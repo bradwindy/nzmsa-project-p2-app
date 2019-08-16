@@ -1,12 +1,17 @@
 import React, { Component } from 'react';
 import { Text, View } from 'react-native';
+import { Appbar, Button, Card, Paragraph } from 'react-native-paper';
+import styles from '../styles';
 
 class VideoList extends Component {
   constructor(props) {
     super(props);
     this.state = {
       videoList: [],
+      urlList: [],
     };
+
+    this.componentDidMount = this.componentDidMount.bind(this);
   }
 
   componentDidMount() {
@@ -18,18 +23,42 @@ class VideoList extends Component {
       })
       .then(response => {
         const output = [];
+        const urls = [];
         response.forEach(video => {
-          // TODO change <star> to a font-awesome icon.
-          const row = <Text key={video.videoId}>{video.videoTitle}</Text>;
+          const row = (
+            <Card key={video.webUrl} style={styles.card}>
+              <Card.Cover source={{ uri: video.thumbnailUrl }} />
+
+              <Card.Content>
+                <Paragraph style={{ fontWeight: '700', paddingTop: 15 }}>
+                  {video.videoTitle}
+                </Paragraph>
+              </Card.Content>
+
+              <Card.Actions>
+                <Button onPress={() => this.playVideo()}>Play</Button>
+                <Button>Heart</Button>
+                <Button>Remove</Button>
+              </Card.Actions>
+            </Card>
+          );
           if (video.isFavourite) {
             output.unshift(row);
+            urls.unshift(video.webUrl);
           } else {
             output.push(row);
+            urls.push(video.webUrl);
           }
         });
         this.setState({ videoList: output });
+        this.setState({ urlList: urls });
+        this.props.updateVideoList(urls);
       });
   }
+
+  playVideo = () => {
+    this.props.playVideo(this.state.urlList[0].slice(-11).toString());
+  };
 
   deleteVideo = id => {
     fetch('https://captivapi.azurewebsites.net/api/Videos/' + id, {

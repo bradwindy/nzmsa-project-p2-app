@@ -51,5 +51,10 @@ export default StyleSheet.create({
     fontWeight: '700',
     paddingLeft: 10,
   },
-  card: { margin: 15, padding: 10 },
+  card: {
+    marginLeft: 7,
+    marginRight: 7,
+    marginTop: 5,
+    marginBottom: 5,
+  },
 });
