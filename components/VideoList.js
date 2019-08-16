@@ -36,7 +36,9 @@ class VideoList extends Component {
               </Card.Content>
 
               <Card.Actions>
-                <Button onPress={() => this.playVideo()}>Play</Button>
+                <Button onPress={() => this.playVideo(video.webUrl)}>
+                  Play
+                </Button>
                 <Button>Heart</Button>
                 <Button>Remove</Button>
               </Card.Actions>
@@ -56,8 +58,8 @@ class VideoList extends Component {
       });
   }
 
-  playVideo = () => {
-    this.props.playVideo(this.state.urlList[0].slice(-11).toString());
+  playVideo = url => {
+    this.props.playVideo(url.slice(-11).toString());
   };
 
   deleteVideo = id => {

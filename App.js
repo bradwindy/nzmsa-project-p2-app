@@ -58,15 +58,6 @@ class App extends Component {
         />
 
         <ScrollView style={styles.scrollView}>
-          <Text style={{ padding: 15 }}>
-            {vidlist[0].slice(-11).toString()}
-          </Text>
-          <Button
-            mode="contained"
-            onPress={() => this.playVideo(vidlist[0].slice(-11).toString())}
-          >
-            Press me
-          </Button>
           <VideoList
             updateVideoList={this.updateVideoList}
             playVideo={this.playVideo}
