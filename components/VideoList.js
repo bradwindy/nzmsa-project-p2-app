@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Text, View } from 'react-native';
-import { Appbar, Button, Card, Paragraph } from 'react-native-paper';
+import { Appbar, Button, Card, Paragraph, TextInput } from 'react-native-paper';
 import styles from '../styles';
 
 class VideoList extends Component {
@@ -12,9 +12,15 @@ class VideoList extends Component {
     };
 
     this.componentDidMount = this.componentDidMount.bind(this);
+    this.updateList = this.updateList.bind(this);
+    this.handleLike = this.handleLike.bind(this);
   }
 
   componentDidMount() {
+    this.updateList();
+  }
+
+  updateList = () => {
     fetch('https://captivapi.azurewebsites.net/api/Videos', {
       method: 'GET',
     })
@@ -39,8 +45,12 @@ class VideoList extends Component {
                 <Button onPress={() => this.playVideo(video.webUrl)}>
                   Play
                 </Button>
-                <Button>Heart</Button>
-                <Button>Remove</Button>
+                <Button onPress={() => this.handleLike(video)}>
+                  {video.isFavourite ? 'UNHEART' : 'HEART'}
+                </Button>
+                <Button onPress={() => this.deleteVideo(video.videoId)}>
+                  Remove
+                </Button>
               </Card.Actions>
             </Card>
           );
@@ -56,10 +66,24 @@ class VideoList extends Component {
         this.setState({ urlList: urls });
         this.props.updateVideoList(urls);
       });
-  }
+  };
 
   playVideo = url => {
     this.props.playVideo(url.slice(-11).toString());
+  };
+
+  addVideo = url => {
+    const body = { url };
+    fetch('https://captivapi.azurewebsites.net/api/Videos', {
+      body: JSON.stringify(body),
+      headers: {
+        Accept: 'text/plain',
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+    }).then(() => {
+      this.updateList();
+    });
   };
 
   deleteVideo = id => {
@@ -95,7 +119,38 @@ class VideoList extends Component {
   };
 
   render() {
-    return <View style={{ padding: 15 }}>{this.state.videoList}</View>;
+    return (
+      <View style={{ padding: 15 }}>
+        <View
+          style={{
+            flexDirection: 'row',
+            width: window.width,
+            margin: 10,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <View style={{ flex: 2 }}>
+            <TextInput
+              style={{ marginBottom: 15, paddingBottom: 5 }}
+              mode="outlined"
+              label="Add Video"
+              placeholder="Video URL"
+              value={this.state.text}
+              onChangeText={text => this.setState({ text })}
+            />
+          </View>
+          <Button
+            style={{ margin: 15, paddingBottom: 5 }}
+            onPress={() => this.addVideo(this.state.text)}
+          >
+            + Add
+          </Button>
+        </View>
+
+        {this.state.videoList}
+      </View>
+    );
   }
 }
 

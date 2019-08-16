@@ -10,24 +10,10 @@ class App extends Component {
     super(props);
     this.state = {
       playingVideoID: 'GlCmAC4MHek',
-      videoList: [''],
+      text: '',
     };
     this.updateVideoList = this.updateVideoList.bind(this);
     this.playVideo = this.playVideo.bind(this);
-  }
-
-  addVideo(url) {
-    const body = { url };
-    fetch('https://captivapi.azurewebsites.net/api/Videos', {
-      body: JSON.stringify(body),
-      headers: {
-        Accept: 'text/plain',
-        'Content-Type': 'application/json',
-      },
-      method: 'POST',
-    }).then(() => {
-      this.state.updateVideoList();
-    });
   }
 
   playVideo(videoID) {
@@ -39,7 +25,6 @@ class App extends Component {
   }
 
   render() {
-    let vidlist = this.state.videoList;
     return (
       <View style={{ flex: 1 }}>
         <Appbar style={styles.bottom}>
